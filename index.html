@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+<h1>Home</h1>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+  // Fill the canvas with green
+  var canvas = document.getElementById('gameCanvas');
+  var context = canvas.getContext('2d');
+  context.fillStyle = 'green';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  const speed = 5;
+
+  let x = 100;
+  let y = 100;
+
+  let targetx = 100;
+  let targety = 100;
+
+  function drawCharacter(x, y, shirtColor, pantsColor, skinColor) {
+      var size = 16;
+      var headSize = size * 1.5;
+      var bodySize = size * 2;
+      var armSize = size * 1.5;
+      var legSize = size * 2;
+
+      // Draw the head
+      context.fillStyle = skinColor;
+      context.beginPath();
+      context.arc(x, y, headSize, 0, 2 * Math.PI);
+      context.fill();
+
+      // Draw the arms
+      context.fillStyle = skinColor;
+      context.fillRect(x - bodySize, y + headSize, armSize, bodySize / 2);
+      context.fillRect(x + bodySize - armSize, y + headSize, armSize, bodySize / 2);
+
+      // Draw the shirt
+      context.fillStyle = shirtColor;
+      context.fillRect(x - bodySize / 2, y + headSize, bodySize, bodySize);
+
+      // Draw the pants with a gap between the legs
+      context.fillStyle = pantsColor;
+      context.fillRect(x - legSize / 2, y + headSize + bodySize, legSize, legSize);
+      context.fillRect(x - legSize / 2, y + headSize + bodySize + legSize, legSize / 2 - 2, legSize);
+      context.fillRect(x + 2, y + headSize + bodySize + legSize, legSize / 2 - 2, legSize);
+
+      // Draw the eyes
+      var eyeSize = size / 4;
+      var eyeOffset = size / 2;
+      context.fillStyle = 'white';
+      context.beginPath();
+      context.arc(x - eyeOffset, y - eyeOffset, eyeSize, 0, 2 * Math.PI);
+      context.arc(x + eyeOffset, y - eyeOffset, eyeSize, 0, 2 * Math.PI);
+      context.fill();
+
+      // Draw the mouth as a smile
+      var mouthWidth = size / 2;
+      var mouthHeight = size / 4;
+      context.fillStyle = 'black';
+      context.beginPath();
+      context.arc(x, y + mouthHeight, mouthWidth, 0, Math.PI);
+      context.fill();
+    }
+
+    canvas.addEventListener('click', function(event) {
+      targetx = event.clientX - canvas.offsetLeft;
+      targety = event.clientY - canvas.offsetTop;
+    });
+
+  function gameLoop() {
+    // move x and y towards target at speed, without overshooting it
+    if (x < targetx) {
+      x = Math.min(x + speed, targetx);
+    } else if (x > targetx) {
+      x = Math.max(x - speed, targetx);
+    }
+
+    if (y < targety) {
+      y = Math.min(y + speed, targety);
+    } else if (y > targety) {
+      y = Math.max(y - speed, targety);
+    }
+
+    // Clear the canvas
+    context.fillStyle = 'green';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the character
+    drawCharacter(x, y, 'blue', 'red', 'tan');
+
+    // Draw some friends
+    drawCharacter(200, 100, 'red', 'purple', 'brown');
+    drawCharacter(300, 300, 'yellow', 'black', 'pink');
+
+    // Call the game loop again
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Start the game loop
+  gameLoop();
+  
+</script>
+</body>
+</html>
